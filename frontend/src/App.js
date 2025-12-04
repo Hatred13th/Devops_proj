@@ -4,8 +4,8 @@ import Context from './components/Context'
 
 function App() {
   const userInfo = {
-    name: "Johnny",
-    email: "codrkai@gamil.com",
+    name: "hadhemi",
+    email: "hadheminser@gamil.com",
     loggedIn: true,
     cartItems: 4
   }
