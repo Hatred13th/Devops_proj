@@ -1,2 +1,2 @@
-use npm install since it's CRA not Vite 
-then npm start 
+use npm install 
+then npm start since it's CRA not Vite 
