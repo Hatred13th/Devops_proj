@@ -1,1 +1,2 @@
-nothing to see here get out 
+use npm install since it's CRA not Vite 
+then npm start 
