@@ -1,0 +1,73 @@
+pipeline {
+    agent any
+
+    options {
+        skipDefaultCheckout(false)
+        timestamps()
+    }
+
+    triggers {
+        // Jenkins will scan the repo periodically for new branches
+        cron('H/5 * * * *') 
+    }
+
+    stages {
+
+        stage('Preparation') {
+            steps {
+                echo "📦 Checking out source code..."
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo "📥 Installing dependencies..."
+                bat """
+                    echo Installing dependencies...
+                    REM Example: npm install OR pip install -r requirements.txt
+                    REM Replace with your real command
+                """
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "🏗 Building the project..."
+                bat """
+                    echo Running build steps...
+                    REM Example: npm run build OR mvn package
+                """
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo "🧪 Running tests..."
+                bat """
+                    echo Running tests...
+                    REM Example: npm test OR pytest
+                """
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                echo "📦 Archiving build artifacts..."
+                archiveArtifacts artifacts: '**/build/**/*', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline completed (success or fail)."
+        }
+        success {
+            echo "✔ SUCCESS"
+        }
+        failure {
+            echo "❌ FAILURE"
+        }
+    }
+}
