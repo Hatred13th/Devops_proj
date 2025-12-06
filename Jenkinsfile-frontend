@@ -4,14 +4,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                 git branch: 'main', url: 'https://github.com/Hatred13th/Devops_proj.git'
+                git branch: 'main', url: 'https://github.com/Hatred13th/Devops_proj.git'
             }
         }
 
         stage('Install Frontend Dependencies') {
             steps {
                 dir('frontend') {
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -19,7 +19,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    sh 'npm run build'
+                    bat 'npm run build'
                 }
             }
         }
@@ -27,7 +27,7 @@ pipeline {
         stage('Run Frontend Tests') {
             steps {
                 dir('frontend') {
-                    sh 'npm test -- --watchAll=false || true'
+                    bat 'npm test -- --watchAll=false || exit 0'
                 }
             }
         }

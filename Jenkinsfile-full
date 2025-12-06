@@ -9,15 +9,15 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                 git branch: 'main', url: 'https://github.com/Hatred13th/Devops_proj.git'
+                git branch: 'main', url: 'https://github.com/Hatred13th/Devops_proj.git'
             }
         }
 
         stage('Backend - Install & Test') {
             steps {
                 dir('backend') {
-                    sh 'npm install'
-                    sh 'npm test -- --watchAll=false || true'
+                    bat 'npm install'
+                    bat 'npm test -- --watchAll=false || exit 0'
                 }
             }
         }
@@ -25,23 +25,24 @@ pipeline {
         stage('Frontend - Install & Build') {
             steps {
                 dir('frontend') {
-                    sh 'npm install'
-                    sh 'npm run build'
+                    bat 'npm install'
+                    bat 'npm run build'
                 }
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t $APP_IMAGE .'
+                bat 'docker build -t %APP_IMAGE% .'
             }
         }
 
         stage('Docker Deploy') {
             steps {
-                sh 'docker stop devops_app || true'
-                sh 'docker rm devops_app || true'
-                sh 'docker run -d --name devops_app -p 3000:3000 $APP_IMAGE'
+                // Windows does not support '|| true', use PowerShell-safe logic
+                bat 'docker stop devops_app || exit 0'
+                bat 'docker rm devops_app || exit 0'
+                bat 'docker run -d --name devops_app -p 3000:3000 %APP_IMAGE%'
             }
         }
     }

@@ -11,7 +11,7 @@ pipeline {
         stage('Install Backend Dependencies') {
             steps {
                 dir('backend') {
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -19,8 +19,8 @@ pipeline {
         stage('Run Backend Tests') {
             steps {
                 dir('backend') {
-                    // If no tests exist, this will still pass
-                    sh 'npm test -- --watchAll=false || true'
+                    // Runs tests but does NOT fail if no tests exist
+                    bat 'npm test -- --watchAll=false || exit 0'
                 }
             }
         }
