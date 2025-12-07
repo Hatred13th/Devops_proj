@@ -19,28 +19,34 @@ pipeline {
             }
         }
 
-        stage('Backend - Install & Test') {
-            steps {
-                dir('backend') {
-                    echo "📥 Installing backend dependencies..."
-                    bat 'npm install'
+        stage('Parallel Build & Test') {
+            parallel {
 
-                    echo "🧪 Running backend tests..."
-                    bat 'npm test -- --watchAll=false || exit 0'
+                stage('Backend Pipeline') {
+                    steps {
+                        dir('backend') {
+                            echo "📥 Installing backend dependencies..."
+                            bat 'npm install'
+
+                            echo "🧪 Running backend tests..."
+                            bat 'npm test -- --watchAll=false || exit 0'
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Frontend - Install & Build') {
-            steps {
-                dir('frontend') {
-                    echo "📥 Installing frontend dependencies..."
-                    bat 'npm install'
+                stage('Frontend Pipeline') {
+                    steps {
+                        dir('frontend') {
+                            echo "📥 Installing frontend dependencies..."
+                            bat 'npm install'
 
-                    echo "🏗 Building frontend..."
-                    bat 'npm run build'
+                            echo "🏗 Building frontend..."
+                            bat 'npm run build'
+                        }
+                    }
                 }
-            }
+
+            } // end parallel
         }
 
         stage('Archive Frontend Build') {
