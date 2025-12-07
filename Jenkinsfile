@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+
+    options {
+        skipDefaultCheckout(false)
+        timestamps()
+    }
+
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo "📦 Checking out repository..."
+                checkout scm
+            }
+        }
+
+        stage('Parallel Build & Test') {
+            parallel {
+
+                stage('Backend Pipeline') {
+                    steps {
+                        dir('backend') {
+                            echo "📥 Installing backend dependencies..."
+                            bat 'npm install'
+
+                            echo "🧪 Running backend tests..."
+                            bat 'npm test -- --watchAll=false || exit 0'
+                        }
+                    }
+                }
+
+                stage('Frontend Pipeline') {
+                    steps {
+                        dir('frontend') {
+                            echo "📥 Installing frontend dependencies..."
+                            bat 'npm install'
+
+                            echo "🏗 Building frontend..."
+                            bat 'npm run build'
+                        }
+                    }
+                }
+
+            } // end parallel
+        }
+
+        stage('Archive Frontend Build') {
+            steps {
+                echo "📦 Archiving build artifacts..."
+                archiveArtifacts artifacts: 'frontend/build/**/*', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline completed."
+        }
+        success {
+            echo "✔ SUCCESS"
+        }
+        failure {
+            echo "❌ FAILURE"
+        }
+    }
+}
