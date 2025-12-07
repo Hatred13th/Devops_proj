@@ -6,9 +6,6 @@ pipeline {
         timestamps()
     }
 
-    triggers {
-        cron('H/5 * * * *')
-    }
 
     stages {
 
